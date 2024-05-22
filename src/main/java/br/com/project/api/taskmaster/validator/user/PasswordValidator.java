@@ -1,5 +1,7 @@
 package br.com.project.api.taskmaster.validator.user;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
@@ -10,11 +12,13 @@ import br.com.project.api.taskmaster.validator.user.interfaces.IPasswordValidato
 public class PasswordValidator implements IPasswordValidator{
 
 	@Override
-	public boolean passwordIsValid(String password) {
+	public List<String> passwordIsValid(String password) {
+		List<String> errors = new ArrayList<>();
+		
 		if(password == null || password.length() < MINIMUM_SIZE || password.length() > MAXIMUM_SIZE) {
-			return false;
+			errors.add("The password entered is not valid.");
 		}
-		return Pattern.matches(PATTERN_VALIDATION, password);
+		return errors;
 	}
 	
 }

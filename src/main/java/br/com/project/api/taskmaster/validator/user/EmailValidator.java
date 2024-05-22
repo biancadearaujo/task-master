@@ -1,5 +1,8 @@
 package br.com.project.api.taskmaster.validator.user;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -20,13 +23,13 @@ public class EmailValidator implements IEmailValidator{
 
 
 	@Override
-	public boolean emailIsValid(String email) {
-		if(userRepository.findByEmail(email).isEmpty()) {
-			return false;
+	public List<String> emailIsValid(String email) {
+		List<String> errors = new ArrayList<>();
+		
+		if(userRepository.findByEmail(email).isPresent()) {
+			errors.add("E-mail already registered.");
 		}
-		//throw new UserAlreadyExistsException("usuario ja existe!");
-		return true;
-	}
-
-	
+		
+		return errors;
+	}	
 }
