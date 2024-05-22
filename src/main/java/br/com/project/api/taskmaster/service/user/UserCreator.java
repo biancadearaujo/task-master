@@ -29,7 +29,7 @@ public class UserCreator {
         		.email(createUserCommand.getEmail())
         		.login(createUserCommand.getLogin())
         		.password(encryptedPassword)
-        		.role(createUserCommand.getRole())
+        		.role(createUserCommand.getRole().USER)
         		.createdAt(generationTimestamp.timestampGenerator())
         		.updatedAt(generationTimestamp.timestampGenerator())
         		.phoneNumber(createUserCommand.getPhoneNumber())
