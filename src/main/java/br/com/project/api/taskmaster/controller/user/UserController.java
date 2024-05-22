@@ -1,14 +1,16 @@
 package br.com.project.api.taskmaster.controller.user;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,32 +26,22 @@ import br.com.project.api.taskmaster.command.CreateUserCommand;
 import br.com.project.api.taskmaster.exception.user.NoRegisteredUsersException;
 import br.com.project.api.taskmaster.model.user.UserModel;
 import br.com.project.api.taskmaster.service.user.UserService;
-import br.com.project.api.taskmaster.validator.user.EmailValidator;
-import br.com.project.api.taskmaster.validator.user.LoginValidator;
-import br.com.project.api.taskmaster.validator.user.PasswordValidator;
-import br.com.project.api.taskmaster.validator.user.PhoneNumberValidator;
+import br.com.project.api.taskmaster.validator.user.UserValidator;
+import br.com.project.api.taskmaster.validator.user.ValidationResult;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
 public class UserController {
 	
-	final UserService userService;
-	final PasswordValidator passwordValidator;
-	final PhoneNumberValidator phoneNumberValidator;
-	final LoginValidator loginValidator;
-	final EmailValidator emailValidator;
-	final EmailController emailController;
+	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 	
-	public UserController(UserService userService, PasswordValidator passwordValidator,
-			PhoneNumberValidator phoneNumberValidator, LoginValidator loginValidator, EmailValidator emailValidator,
-			EmailController emailController) {
+	final UserService userService;
+	final UserValidator userValidator;
+	
+	public UserController(UserService userService, UserValidator userValidator) {
 		this.userService = userService;
-		this.passwordValidator = passwordValidator;
-		this.phoneNumberValidator = phoneNumberValidator;
-		this.loginValidator = loginValidator;
-		this.emailValidator = emailValidator;
-		this.emailController = emailController;
+		this.userValidator = userValidator;
 	}
 
 
@@ -61,51 +53,25 @@ public class UserController {
 		if(users.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(users);
-		
+		return ResponseEntity.status(HttpStatus.OK).body(users);		
 	}
 	
 	
 	@PostMapping
-	public ResponseEntity<Object> register(@RequestBody @Valid CreateUserCommand createUserCommand){
-		
-		try {
-			if(!passwordValidator.passwordIsValid(createUserCommand.getPassword())) {
-				return ResponseEntity.status(HttpStatus.CONFLICT).body("The password entered is not valid.");
-			}
-			if(!phoneNumberValidator.phoneNumberIsValid(createUserCommand.getPhoneNumber())) {
-				return ResponseEntity.status(HttpStatus.CONFLICT).body("The telephone number provided is not valid.");
-			}
-			if(!loginValidator.loginIsValid(createUserCommand.getLogin())) {
-				return ResponseEntity.status(HttpStatus.CONFLICT).body("The Login entered is not valid.");
-			}
-			if((emailController.validarEmail(createUserCommand)).getStatusCode().is2xxSuccessful()) {
-				//return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(createUserCommand));
-			}
-			//emailController.validarEmail(createUserCommand);
-			//emailValidator.emailIsValid(createUserCommand.getEmail());
-			/*if(!emailValidator.emailIsValid(createUserCommand.getEmail())) {
-				return ResponseEntity.status(HttpStatus.CONFLICT).body("E-mail already registered.");
-			}*/
-			return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(createUserCommand));
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error register user");
-		}
-		
+	public ResponseEntity<Object> register(@RequestBody @Valid CreateUserCommand createUserCommand) {
+	    try {
+	        List<String> validationErrors = userValidator.validateUser(createUserCommand);
+
+	        if (!validationErrors.isEmpty()) {
+	            return ResponseEntity.status(HttpStatus.CONFLICT).body(validationErrors);
+	        }
+
+	        return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(createUserCommand));
+	    } catch (Exception e) {
+	    	logger.error("Error registering user", e);
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error registering user");
+	    }
 	}
-	
-	
-	/*
-	 *  ResponseEntity<Object> response = emailController.validarEmail(createUserCommand);
-
-        // Se a validação for bem-sucedida, cria o usuário
-        if (response.getStatusCode().is2xxSuccessful()) {
-            // ... código para criar o usuário ...
-        }
-
-        return response;
-	 * */
-	
 	
 	
 	@PutMapping("/{userId}")
@@ -113,28 +79,22 @@ public class UserController {
     public ResponseEntity<Object> updateUser(@PathVariable UUID userId, @RequestBody @Valid Map<String, Object> updateAttributes) {
        
 		try {
-        	if(updateAttributes.containsKey("password") && !passwordValidator.passwordIsValid((String) updateAttributes.get("password"))) {
-    			return ResponseEntity.status(HttpStatus.CONFLICT).body("The password entered is not valid.");
-    		}
-    		if(updateAttributes.containsKey("phoneNumber") && !phoneNumberValidator.phoneNumberIsValid((String)updateAttributes.get("phoneNumber"))) {
-    			return ResponseEntity.status(HttpStatus.CONFLICT).body("The telephone number provided is not valid.");
-    		}
-    		if(updateAttributes.containsKey("login") && !loginValidator.loginIsValid((String) updateAttributes.get("login"))) {
-    			return ResponseEntity.status(HttpStatus.CONFLICT).body("The Login entered is not valid.");
-    		}
-    		if(updateAttributes.containsKey("email") && !emailValidator.emailIsValid((String) updateAttributes.get("email"))) {
-				return ResponseEntity.status(HttpStatus.CONFLICT).body("E-mail already registered.");
-			}
-    		
+			List<String> validationErrors = userValidator.validateUserUpdate(userId, updateAttributes);
+			
+			if (!validationErrors.isEmpty()) {
+	            return ResponseEntity.status(HttpStatus.CONFLICT).body(validationErrors);
+	        }
+			
             userService.updateUser(userId, updateAttributes);
             return ResponseEntity.status(HttpStatus.OK).body("User updated successfully");
             
         } catch (NoRegisteredUsersException e) {
+        	logger.error("User not found", e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         } catch (Exception e) {
+        	logger.error("Error updating user", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user");
-        }
-		
+        }	
     }
 	
 	
@@ -149,7 +109,5 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting user");
         }
-		
 	}
-	
 }
