@@ -88,7 +88,7 @@ public class UserService {
     	    return userRepository.save(userModel); 
 			
 		} catch (InvalidUserException e) {
-			logger.error("Validation error for the registering user", e);
+			logger.error("Validation error when updating user", e);
 			throw e;
 		} catch (Exception e) {
 			logger.error("Validation error when updating user", e);

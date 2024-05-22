@@ -12,7 +12,7 @@ public class CreateUserCommand {
 	private String name;
 	
 	@Email
-	@NotBlank(message = "Email cannot be null.") //Email tem que ser unico.
+	@NotBlank(message = "Email cannot be null.")
 	private String email;
 	
 	@NotBlank(message = "Login cannot be null.")
