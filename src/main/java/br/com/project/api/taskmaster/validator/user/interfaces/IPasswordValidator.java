@@ -1,8 +1,10 @@
 package br.com.project.api.taskmaster.validator.user.interfaces;
 
+import java.util.List;
+
 public interface IPasswordValidator {
 
-	boolean passwordIsValid(String password);
+	List<String> passwordIsValid(String password);
 	
 	static final int MINIMUM_SIZE = 8;
 	static final int MAXIMUM_SIZE = 16;
