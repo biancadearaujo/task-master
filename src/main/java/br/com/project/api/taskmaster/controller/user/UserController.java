@@ -2,6 +2,7 @@ package br.com.project.api.taskmaster.controller.user;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.project.api.taskmaster.command.CreateUserCommand;
+import br.com.project.api.taskmaster.exception.user.InvalidUserException;
 import br.com.project.api.taskmaster.exception.user.NoRegisteredUsersException;
 import br.com.project.api.taskmaster.model.user.UserModel;
 import br.com.project.api.taskmaster.service.user.UserService;
@@ -56,6 +58,18 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK).body(users);		
 	}
 	
+	@GetMapping("/{userId}")
+	public ResponseEntity<Object> getUserById(@PathVariable UUID userId){
+		try {
+			Optional<UserModel> user = userService.getUserById(userId);
+			return ResponseEntity.status(HttpStatus.OK).body(user);
+			} catch (NoRegisteredUsersException e) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+	        } catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting user");
+	        }
+	}
+	
 	
 	@PostMapping
 	public ResponseEntity<Object> register(@RequestBody @Valid CreateUserCommand createUserCommand) {
@@ -79,22 +93,26 @@ public class UserController {
     public ResponseEntity<Object> updateUser(@PathVariable UUID userId, @RequestBody @Valid Map<String, Object> updateAttributes) {
        
 		try {
-			List<String> validationErrors = userValidator.validateUserUpdate(userId, updateAttributes);
-			
-			if (!validationErrors.isEmpty()) {
-	            return ResponseEntity.status(HttpStatus.CONFLICT).body(validationErrors);
-	        }
-			
-            userService.updateUser(userId, updateAttributes);
-            return ResponseEntity.status(HttpStatus.OK).body("User updated successfully");
+            List<String> validationErrors = userValidator.validateUserUpdate(userId, updateAttributes);
+
+            if (!validationErrors.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(validationErrors);
+            }
+
+            Optional<UserModel> updatedUser = userService.updateUser(userId, updateAttributes);
             
-        } catch (NoRegisteredUsersException e) {
-        	logger.error("User not found", e);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            if (updatedUser.isPresent()) {
+                return ResponseEntity.status(HttpStatus.OK).body("User updated successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+
+        } catch (InvalidUserException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e);
         } catch (Exception e) {
-        	logger.error("Error updating user", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user");
-        }	
+            logger.error("Unexpected error updating user", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error updating user");
+        }
     }
 	
 	
