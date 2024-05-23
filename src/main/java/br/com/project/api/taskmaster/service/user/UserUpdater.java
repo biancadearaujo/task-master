@@ -1,5 +1,6 @@
 package br.com.project.api.taskmaster.service.user;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
@@ -58,7 +59,7 @@ public class UserUpdater {
 	                        userModel.getClass().getMethod(setterMethodName, attributeValue.getClass()).invoke(userModel, attributeValue);
 	                        break;
 	                }
-	            } catch (Exception e) {
+	            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
 	                e.printStackTrace();
 	            }
 	        }
