@@ -33,6 +33,7 @@ public class SecurityConfiguration {
 	        		.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
 	        		.requestMatchers(HttpMethod.POST, "/auth").permitAll()
 	        		.requestMatchers(HttpMethod.GET, "/auth").hasRole("ADMIN")
+	        		.requestMatchers(HttpMethod.GET, "{userId}/auth").hasRole("ADMIN")
 	        		//.requestMatchers(HttpMethod.PUT, "/auth/{userId}/update")//.hasRole("USER")
 	        		//.requestMatchers(HttpMethod.DELETE, "/auth/{userId}").hasRole("USER")
 	        		.requestMatchers(AUTH_WHITELIST).permitAll()
