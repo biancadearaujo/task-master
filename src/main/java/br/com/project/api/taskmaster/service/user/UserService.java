@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -44,8 +45,10 @@ public class UserService {
     	return userRepository.findAll(pageable);	
     }
 	
-	public UserModel getUserById(int id) {
-		return null;
+	public Optional<UserModel> getUserById(UUID userId) {
+			Optional<UserModel> userModel = Optional.of(userRepository.findById(userId).orElseThrow(() -> new NoRegisteredUsersException("User not found")));
+			
+			return userModel;
 	}
     
 
@@ -71,31 +74,21 @@ public class UserService {
 		}   
 	}
 	
-	
-    @Transactional
-	public UserModel updateUser(UUID userId, Map<String, Object> updateAttributes) {
-    	
-    	try {
-    		List<String> validationErrors = userValidator.validateUserUpdate(userId, updateAttributes);
-    		
-    		if(!validationErrors.isEmpty()) {
-    			throw new InvalidUserException(validationErrors);
-    		}
-    		UserModel userModel = userRepository.findById(userId).orElseThrow(() -> new NoRegisteredUsersException("User not found"));
-    		
-    		userUpdater.updateUserAttributes(updateAttributes, userModel);
+    
+    public Optional<UserModel> updateUser(UUID userId, Map<String, Object> updateAttributes) {
+        List<String> validationErrors = userValidator.validateUserUpdate(userId, updateAttributes);
 
-    	    return userRepository.save(userModel); 
-			
-		} catch (InvalidUserException e) {
-			logger.error("Validation error when updating user", e);
-			throw e;
-		} catch (Exception e) {
-			logger.error("Validation error when updating user", e);
-	        throw new RuntimeException("Error updating user", e);
-		}
-	}
+        if (!validationErrors.isEmpty()) {
+            throw new InvalidUserException(validationErrors);
+        }
 
+        return userRepository.findById(userId)
+            .map(userModel -> {
+                userUpdater.updateUserAttributes(updateAttributes, userModel);
+                return userRepository.save(userModel);
+            });
+    }
+    
 	
     @Transactional
 	public String delete(UUID id) {
