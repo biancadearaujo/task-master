@@ -3,7 +3,7 @@ package br.com.project.api.taskmaster.service.user;
 import org.springframework.stereotype.Component;
 
 import br.com.project.api.taskmaster.builder.user.UserBuilder;
-import br.com.project.api.taskmaster.command.CreateUserCommand;
+import br.com.project.api.taskmaster.command.user.CreateUserCommand;
 import br.com.project.api.taskmaster.model.user.UserModel;
 import br.com.project.api.taskmaster.utils.user.EncryptionPasswordEncoder;
 import br.com.project.api.taskmaster.utils.user.GenerationTimestamp;
