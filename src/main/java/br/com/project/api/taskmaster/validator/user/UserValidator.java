@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
-import br.com.project.api.taskmaster.command.CreateUserCommand;
+import br.com.project.api.taskmaster.command.user.CreateUserCommand;
 import br.com.project.api.taskmaster.validator.user.interfaces.IUserValidator;
 
 @Component
