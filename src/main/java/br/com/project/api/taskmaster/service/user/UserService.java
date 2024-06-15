@@ -12,7 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.project.api.taskmaster.command.CreateUserCommand;
+import br.com.project.api.taskmaster.command.user.CreateUserCommand;
 import br.com.project.api.taskmaster.exception.user.InvalidUserException;
 import br.com.project.api.taskmaster.exception.user.NoRegisteredUsersException;
 import br.com.project.api.taskmaster.model.user.UserModel;
