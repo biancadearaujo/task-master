@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.project.api.taskmaster.command.CreateUserCommand;
+import br.com.project.api.taskmaster.command.user.CreateUserCommand;
 import br.com.project.api.taskmaster.exception.user.InvalidUserException;
 import br.com.project.api.taskmaster.exception.user.NoRegisteredUsersException;
 import br.com.project.api.taskmaster.model.user.UserModel;
