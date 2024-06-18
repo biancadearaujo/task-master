@@ -2,7 +2,6 @@ package br.com.project.api.taskmaster.validator.user;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 

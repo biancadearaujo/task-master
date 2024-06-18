@@ -29,7 +29,6 @@ import br.com.project.api.taskmaster.exception.user.NoRegisteredUsersException;
 import br.com.project.api.taskmaster.model.user.UserModel;
 import br.com.project.api.taskmaster.service.user.UserService;
 import br.com.project.api.taskmaster.validator.user.UserValidator;
-import br.com.project.api.taskmaster.validator.user.ValidationResult;
 import jakarta.validation.Valid;
 
 @RestController

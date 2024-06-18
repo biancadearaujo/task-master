@@ -1,6 +1,5 @@
 package br.com.project.api.taskmaster.service.project;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,9 +11,7 @@ import org.springframework.stereotype.Service;
 import br.com.project.api.taskmaster.command.project.CreateProjectCommand;
 import br.com.project.api.taskmaster.exception.project.InvalidProjectException;
 import br.com.project.api.taskmaster.exception.project.NoRegisteredProjectException;
-import br.com.project.api.taskmaster.exception.user.NoRegisteredUsersException;
 import br.com.project.api.taskmaster.model.project.ProjectModel;
-import br.com.project.api.taskmaster.model.user.UserModel;
 import br.com.project.api.taskmaster.repository.project.ProjectRepository;
 import br.com.project.api.taskmaster.validator.project.ProjectValidator;
 
