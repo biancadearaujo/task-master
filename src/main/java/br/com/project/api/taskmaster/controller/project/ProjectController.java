@@ -1,5 +1,6 @@
 package br.com.project.api.taskmaster.controller.project;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,21 +12,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.project.api.taskmaster.command.project.CreateProjectCommand;
 import br.com.project.api.taskmaster.exception.project.NoRegisteredProjectException;
 import br.com.project.api.taskmaster.model.project.ProjectModel;
 import br.com.project.api.taskmaster.service.project.ProjectService;
+import br.com.project.api.taskmaster.validator.project.ProjectValidator;
 
 @RestController
 @RequestMapping("/project")
 public class ProjectController {
 
 	final ProjectService projectService;
+	final ProjectValidator projectValidator;
 
-	public ProjectController(ProjectService projectService) {
+	public ProjectController(ProjectService projectService, ProjectValidator projectValidator) {
 		this.projectService = projectService;
+		this.projectValidator = projectValidator;
 	}
 	
 	@GetMapping
@@ -55,8 +61,18 @@ public class ProjectController {
 		
 	}
 	
-	public void save() {
-		
+	@PostMapping
+	public ResponseEntity<Object> save(CreateProjectCommand createProjectCommand) {
+		try {
+			List<String> validationErrors = projectValidator.validateProject(createProjectCommand);
+			
+			if(validationErrors.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.CONFLICT).body(validationErrors);
+			}
+			return ResponseEntity.status(HttpStatus.OK).body(projectService.save(createProjectCommand));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 	
 	
