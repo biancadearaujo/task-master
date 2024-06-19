@@ -57,7 +57,7 @@ public class ProjectController {
 		}
 	}
 	
-	public void getByName() {
+	public ResponseEntity<Optional<ProjectModel>> getByName() {
 		
 	}
 	
