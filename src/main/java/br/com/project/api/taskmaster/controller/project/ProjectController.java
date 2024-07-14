@@ -20,6 +20,7 @@ import br.com.project.api.taskmaster.command.project.CreateProjectCommand;
 import br.com.project.api.taskmaster.exception.project.NoRegisteredProjectException;
 import br.com.project.api.taskmaster.model.project.ProjectModel;
 import br.com.project.api.taskmaster.service.project.ProjectService;
+import br.com.project.api.taskmaster.service.user.UserService;
 import br.com.project.api.taskmaster.validator.project.ProjectValidator;
 
 @RestController
@@ -57,8 +58,16 @@ public class ProjectController {
 		}
 	}
 	
-	public ResponseEntity<Optional<ProjectModel>> getByName() {
-		
+	
+	public ResponseEntity<Optional<ProjectModel>> getByName(String name) {
+		try {
+			Optional<ProjectModel> project = projectService.getByName(name);
+			return ResponseEntity.status(HttpStatus.OK).body(project);
+		} catch (NoRegisteredProjectException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 	
 	@PostMapping
