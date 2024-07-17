@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -71,6 +72,7 @@ public class ProjectController {
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.idUser")
 	public ResponseEntity<Object> save(CreateProjectCommand createProjectCommand) {
 		try {
 			List<String> validationErrors = projectValidator.validateProject(createProjectCommand);
