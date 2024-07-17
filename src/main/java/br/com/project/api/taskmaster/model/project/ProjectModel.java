@@ -48,7 +48,7 @@ public class ProjectModel {
 	@Column(name = "priority")
 	private String priority;// ver o tipo de prioridade.
 	
-	@Column(name = "name")
+	@Column(name = "status")
 	private String status;
 	
 	//@Column(name = "creator_user_id")
