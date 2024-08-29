@@ -1,6 +1,7 @@
 package br.com.project.api.taskmaster.command.user;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import br.com.project.api.taskmaster.model.user.UserRole;
 import jakarta.validation.constraints.Email;
@@ -36,7 +37,7 @@ public class CreateUserCommand {
 	private String verificationToken;
 	
 	private String privider;
-	
+
 
 	public CreateUserCommand(@NotBlank String name, @NotBlank String email, @NotBlank String login,
 			@NotBlank String password, UserRole role, LocalDateTime createdAt, LocalDateTime updatedAt,
@@ -54,11 +55,13 @@ public class CreateUserCommand {
 		this.verificationToken = verificationToken;
 		this.privider = privider;
 	}
+	
 
 	
 	public String getName() {
 		return name;
 	}
+
 
 	public void setName(String name) {
 		this.name = name;
