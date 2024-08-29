@@ -1,26 +1,32 @@
 package br.com.project.api.taskmaster.model.project;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import br.com.project.api.taskmaster.model.user.UserModel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idProject ")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 
 @Entity
 @Table(name = "TB_PROJECTS")
-public class ProjectModel {
-
+public class ProjectModel  implements Serializable{
+	private static final long serialVersionUID = 1L;	
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id_project")
@@ -53,12 +59,20 @@ public class ProjectModel {
 	
 	//@Column(name = "creator_user_id")
 	//private UUID creatorUserId;//id do usuario.
-		
 	
+	/*@ManyToOne
+	@JoinColumn(name="id_user")
+	private UserModel user;
+	*/
+	
+	@ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserModel user;
 	
 	public ProjectModel() {
 	}
 	
+	//Sem relacionamento e creatorUserID
 	public ProjectModel(UUID id, @NotBlank(message = "Name cannot be null.") String name, String description,
 			LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime startDate, LocalDateTime deadlineDate,
 			String priority, String status) {
@@ -73,6 +87,7 @@ public class ProjectModel {
 		this.status = status;
 	}
 
+	//Sem relacionamento e creatorUserID
 	public ProjectModel(@NotBlank(message = "Name cannot be null.") String name, String description,
 			LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime startDate, LocalDateTime deadlineDate,
 			String priority, String status) {
@@ -90,7 +105,7 @@ public class ProjectModel {
 	public UUID getId() {
 		return id;
 	}
-	
+
 	public void setId(UUID id) {
 		this.id = id;
 	}
@@ -158,5 +173,55 @@ public class ProjectModel {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	public UserModel getUser() {
+		return user;
+	}
+
+	public void setUser(UserModel user) {
+		this.user = user;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	/*public ProjectModel(UUID id, @NotBlank(message = "Name cannot be null.") String name, String description,
+			LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime startDate, LocalDateTime deadlineDate,
+			String priority, String status, UUID creatorUserId, UserModel user) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.startDate = startDate;
+		this.deadlineDate = deadlineDate;
+		this.priority = priority;
+		this.status = status;
+		this.creatorUserId = creatorUserId;
+		this.user = user;
+	}
+	
+	
+
+	public ProjectModel(@NotBlank(message = "Name cannot be null.") String name, String description,
+			LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime startDate, LocalDateTime deadlineDate,
+			String priority, String status, UUID creatorUserId, UserModel user) {
+		super();
+		this.name = name;
+		this.description = description;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.startDate = startDate;
+		this.deadlineDate = deadlineDate;
+		this.priority = priority;
+		this.status = status;
+		this.creatorUserId = creatorUserId;
+		this.user = user;
+	}
+*/
+
+	
 
 }
