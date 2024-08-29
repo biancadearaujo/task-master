@@ -12,7 +12,9 @@ import br.com.project.api.taskmaster.command.project.CreateProjectCommand;
 import br.com.project.api.taskmaster.exception.project.InvalidProjectException;
 import br.com.project.api.taskmaster.exception.project.NoRegisteredProjectException;
 import br.com.project.api.taskmaster.model.project.ProjectModel;
+import br.com.project.api.taskmaster.model.user.UserModel;
 import br.com.project.api.taskmaster.repository.project.ProjectRepository;
+import br.com.project.api.taskmaster.repository.user.UserRepository;
 import br.com.project.api.taskmaster.validator.project.ProjectValidator;
 
 @Service
@@ -21,13 +23,23 @@ public class ProjectService {
 	final ProjectRepository projectRepository;
 	final ProjectValidator projectValidator;
 	final ProjectCreator projectCreator;
+	final UserRepository userRepository;
 
-	public ProjectService(ProjectRepository projectRepository, ProjectValidator projectValidator, ProjectCreator projectCreator) {
+	public ProjectService(ProjectRepository projectRepository, ProjectValidator projectValidator, ProjectCreator projectCreator, UserRepository userRepository) {
 		this.projectRepository = projectRepository;
 		this.projectValidator = projectValidator;
 		this.projectCreator = projectCreator;
+		this.userRepository = userRepository;
 	}
 	
+	
+	public ProjectModel criarProjeto(ProjectModel projectModel) {
+        return projectRepository.save(projectModel);
+    }
+
+    public List<ProjectModel> listarProjetosPorUsuario(UserModel user) {
+        return projectRepository.findByUser(user);
+    }
 	
 	public Page<ProjectModel> getAll(Pageable pageable) {
 		return projectRepository.findAll(pageable);	
@@ -53,6 +65,7 @@ public class ProjectService {
 			}
 			
 			ProjectModel newProject = projectCreator.createProjectAttributes(createProjectCommand);
+			
 			return projectRepository.save(newProject);
 			
 		} catch (InvalidProjectException e) {
