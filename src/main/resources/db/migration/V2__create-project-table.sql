@@ -1,11 +1,12 @@
 CREATE TABLE TB_PROJECTS (
   id_project UUID PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
-  description VARCHAR(255),
+  description TEXT,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   start_date TIMESTAMP,
   deadline_date TIMESTAMP,
   priority VARCHAR(255),
-  status VARCHAR(255)
+  status VARCHAR(255),
+  user_id UUID REFERENCES TB_USERS(id_user)
 );
