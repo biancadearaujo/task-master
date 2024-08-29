@@ -16,8 +16,7 @@ public class ProjectCreator {
 		this.generationTimestamp = generationTimestamp;
 	}
 
-
-
+	
 	public ProjectModel createProjectAttributes(CreateProjectCommand createProjectCommand) {
 		return new ProjectBuilder()
 				.name(createProjectCommand.getName())
