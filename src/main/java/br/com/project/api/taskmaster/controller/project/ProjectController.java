@@ -11,21 +11,25 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.project.api.taskmaster.command.project.CreateProjectCommand;
 import br.com.project.api.taskmaster.exception.project.NoRegisteredProjectException;
 import br.com.project.api.taskmaster.model.project.ProjectModel;
+import br.com.project.api.taskmaster.model.user.UserModel;
 import br.com.project.api.taskmaster.service.project.ProjectService;
 import br.com.project.api.taskmaster.service.user.UserService;
 import br.com.project.api.taskmaster.validator.project.ProjectValidator;
+import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/project")
+@RequestMapping("/auth/project")
 public class ProjectController {
 
 	final ProjectService projectService;
@@ -35,6 +39,21 @@ public class ProjectController {
 		this.projectService = projectService;
 		this.projectValidator = projectValidator;
 	}
+	
+	
+	/*
+	@PostMapping
+    public ResponseEntity<ProjectModel> criarProjeto(@RequestBody ProjectModel projeto, @AuthenticationPrincipal UserModel user) {
+        projeto.setUser(user);
+        ProjectModel novoProjeto = projectService.criarProjeto(projeto);
+        return ResponseEntity.ok(novoProjeto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProjectModel>> listarProjetos(@AuthenticationPrincipal UserModel user) {
+        List<ProjectModel> projetos = projectService.listarProjetosPorUsuario(user);
+        return ResponseEntity.ok(projetos);
+    }*/
 	
 	@GetMapping
 	public ResponseEntity<Page<ProjectModel>> getAll(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
@@ -60,7 +79,7 @@ public class ProjectController {
 	}
 	
 	
-	public ResponseEntity<Optional<ProjectModel>> getByName(String name) {
+	/*public ResponseEntity<Optional<ProjectModel>> getByName(String name) {
 		try {
 			Optional<ProjectModel> project = projectService.getByName(name);
 			return ResponseEntity.status(HttpStatus.OK).body(project);
@@ -69,22 +88,45 @@ public class ProjectController {
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
-	}
+	}*/
 	
 	@PostMapping
-	@PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.idUser")
-	public ResponseEntity<Object> save(CreateProjectCommand createProjectCommand) {
+	public ResponseEntity<Object> save(@RequestBody @Valid CreateProjectCommand createProjectCommand) {
 		try {
 			List<String> validationErrors = projectValidator.validateProject(createProjectCommand);
 			
-			if(validationErrors.isEmpty()) {
+			if(!validationErrors.isEmpty()) {
+				System.out.println("Aqui está dando erro");
 				return ResponseEntity.status(HttpStatus.CONFLICT).body(validationErrors);
 			}
+			System.out.println("Segundo que pode estar dando erro");
 			return ResponseEntity.status(HttpStatus.OK).body(projectService.save(createProjectCommand));
 		} catch (Exception e) {
+			System.out.println("Terceiro que pode estar dando erro");
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
-	
+	/*
+	@PostMapping
+	public ResponseEntity<Object> save(@RequestBody @Valid CreateProjectCommand createProjectCommand) {
+	    System.out.println("Entrou no método save do Controller");
+	    try {
+	        List<String> validationErrors = projectValidator.validateProject(createProjectCommand);
+	        
+	        if (!validationErrors.isEmpty()) {
+	            System.out.println("Aqui está dando erro - Validação Falhou: " + validationErrors);
+	            return ResponseEntity.status(HttpStatus.CONFLICT).body(validationErrors);
+	        }
+	        System.out.println("Validação passou - Chamando projectService.save");
+	        ProjectModel savedProject = projectService.save(createProjectCommand);
+	        System.out.println("Projecto salvo com sucesso: " + savedProject);
+	        return ResponseEntity.status(HttpStatus.OK).body(savedProject);
+	    } catch (Exception e) {
+	        System.out.println("Terceiro que pode estar dando erro - Exceção: " + e.getMessage());
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
+	}
+	*/
 	
 }

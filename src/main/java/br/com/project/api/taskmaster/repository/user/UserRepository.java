@@ -13,5 +13,7 @@ import br.com.project.api.taskmaster.model.user.UserModel;
 public interface UserRepository extends JpaRepository<UserModel, UUID>{
 
 	UserDetails findByLogin(String login);
+	//Optional<UserDetails> findByLogin(String login);
+	//Optional<UserModel> findByLogin(String login);
 	Optional<UserModel> findByEmail(String email);
 }

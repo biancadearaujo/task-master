@@ -55,6 +55,7 @@ public class ProjectService {
 		return projectModel;
 	}
 	
+	/*
 	public ProjectModel save(CreateProjectCommand createProjectCommand) {
 		
 		try {
@@ -66,6 +67,13 @@ public class ProjectService {
 			
 			ProjectModel newProject = projectCreator.createProjectAttributes(createProjectCommand);
 			
+			if (newProject.getUser() == null) {
+				System.out.println("Usuário recebeu nulo");
+	            throw new RuntimeException("UserModel is null before saving the project.");
+	        } else {
+	            System.out.println("UserModel: " + newProject.getUser().getId());
+	        }
+			
 			return projectRepository.save(newProject);
 			
 		} catch (InvalidProjectException e) {
@@ -73,7 +81,55 @@ public class ProjectService {
 		} catch (Exception e) {
 			throw e;
 		}
-	}
+	}*/
+	/*
+	public ProjectModel save(CreateProjectCommand createProjectCommand) {
+			
+			try {
+				List<String> validationErrors = projectValidator.validateProject(createProjectCommand);
+				
+				if(!validationErrors.isEmpty()) {
+					throw new InvalidProjectException(validationErrors);
+				}
+				
+				ProjectModel newProject = projectCreator.createProjectAttributes(createProjectCommand);
+
+		        // Obtém o usuário a partir do ID fornecido
+		        UserModel user = userRepository.findById(createProjectCommand.getUserId())
+		        		.orElseThrow();
+		        
+		        newProject.setUser(user);
+				
+				return projectRepository.save(newProject);
+				
+			} catch (InvalidProjectException e) {
+				throw e;
+			} catch (Exception e) {
+				throw e;
+			}
+	}*/
+	
+	public ProjectModel save(CreateProjectCommand createProjectCommand) {
+			
+			try {
+				List<String> validationErrors = projectValidator.validateProject(createProjectCommand);
+				
+				if(!validationErrors.isEmpty()) {
+					throw new InvalidProjectException(validationErrors);
+				}
+				
+				ProjectModel newProject = projectCreator.createProjectAttributes(createProjectCommand);
+								
+				
+				return projectRepository.save(newProject);
+				
+			} catch (InvalidProjectException e) {
+				throw e;
+			} catch (Exception e) {
+				throw e;
+			}
+		}
+	
 	
 	public ProjectModel update() {
 		return null;

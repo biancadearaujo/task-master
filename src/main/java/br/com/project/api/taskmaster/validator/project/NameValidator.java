@@ -16,7 +16,7 @@ public class NameValidator implements INameValidator{
 		List<String> errors = new ArrayList<>();
 		
 		if(name == null || name.length()>MAXIMUM_SIZE || name.length()<MINIMUM_SIZE) {
-			errors.add("The login is too big.");
+			errors.add("The project name must be between " + MINIMUM_SIZE + " and " + MAXIMUM_SIZE + " characters long.");
 		}
 		
 		return errors;

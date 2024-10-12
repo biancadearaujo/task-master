@@ -1,6 +1,7 @@
 package br.com.project.api.taskmaster.config.security;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import br.com.project.api.taskmaster.model.user.UserModel;
 import br.com.project.api.taskmaster.repository.user.UserRepository;
 import br.com.project.api.taskmaster.service.security.TokenService;
 import jakarta.servlet.FilterChain;
@@ -34,13 +36,16 @@ public class SecurityFilter extends OncePerRequestFilter{
 			var login = tokenService.validateToken(token);
 			UserDetails userDetails = userRepository.findByLogin(login);
 			
-			var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-			
+			if (userDetails != null) {
+				var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+			} else {
+			    System.out.println("Usuário não encontrado para o login: " + login);
+			}			
 		}
 		filterChain.doFilter(request, response);
-		
 	}
+	
 	
 	private String recoverToken(HttpServletRequest request) {
 		var authHeader = request.getHeader("Authorization");

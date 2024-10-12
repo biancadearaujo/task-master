@@ -30,10 +30,16 @@ public class SecurityConfiguration {
 	        .csrf(csrf -> csrf.disable())
 	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	        .authorizeHttpRequests(authorize -> authorize
-	        		.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-	        		.requestMatchers(HttpMethod.POST, "/auth").permitAll()
+	        		.requestMatchers(HttpMethod.POST, "/auth/login").permitAll() //fazer login
+	        		.requestMatchers(HttpMethod.POST, "/auth").permitAll() // cadastrar
+	        		//.requestMatchers(HttpMethod.POST, "/auth/project").permitAll()
 	        		.requestMatchers(HttpMethod.GET, "/auth").hasRole("ADMIN")
 	        		.requestMatchers(HttpMethod.GET, "{userId}/auth").hasRole("ADMIN")
+	        		//.requestMatchers(HttpMethod.GET, "/auth/project").hasRole("USER")
+	        		.requestMatchers(HttpMethod.GET, "/auth/project").hasRole("USER")
+	        		.requestMatchers(HttpMethod.POST, "/auth/project").hasRole("USER")
+	        		.requestMatchers(HttpMethod.POST, "/auth/project").hasRole("USER")
+	        		.requestMatchers(HttpMethod.GET, "/auth/project").hasRole("USER")
 	        		//.requestMatchers(HttpMethod.PUT, "/auth/{userId}/update")//.hasRole("USER")
 	        		//.requestMatchers(HttpMethod.DELETE, "/auth/{userId}").hasRole("USER")
 	        		.requestMatchers(AUTH_WHITELIST).permitAll()

@@ -16,6 +16,7 @@ public class ProjectBuilder {
 	private LocalDateTime deadlineDate;
 	private String priority;// ver o tipo de prioridade.
 	private String status;
+	//private UUID userId;
 	//private UUID creatorUserId;//id do usuario.
 	//private UserModel user;
 
@@ -60,16 +61,21 @@ public class ProjectBuilder {
 		return this;
 	}
 	
+	/*public ProjectBuilder user (UUID userId) {
+		this.userId = userId;
+		return this;
+	}*/
+	
 	/*public ProjectBuilder creatorUserId (UUID creatorUserId) {
 		this.creatorUserId = creatorUserId;
 		return this;
-	}/*I
-	/*
-	public ProjectBuilder user (UserModel user) {
+	}
+	*/
+	/*public ProjectBuilder user (UserModel user) {
 		this.user = user;
 		return this;
-	}*/
-
+	}
+*/
 	public ProjectModel build() {
 		return new ProjectModel(
 				this.name,
@@ -80,8 +86,7 @@ public class ProjectBuilder {
 				this.deadlineDate,
 				this.priority,
 				this.status//,
-		//		this.creatorUserId//,
-				///this.user
+				//this.user
 		);
 	}
 	

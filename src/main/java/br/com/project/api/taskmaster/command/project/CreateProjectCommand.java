@@ -1,45 +1,29 @@
 package br.com.project.api.taskmaster.command.project;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
+import br.com.project.api.taskmaster.model.user.UserModel;
 import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 
 public class CreateProjectCommand {
 	
-	@NotBlank(message = "Name cannot be null.")
-	@Column(name = "name")
 	private String name;
-	
-	@Column(name = "description")
 	private String description;
-	
-	@Column(name = "created_at")
 	private LocalDateTime createdAt;
-	
-	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
-	
-	@Column(name = "start_date")
 	private LocalDateTime startDate;
-	
-	@Column(name = "deadline_date")
 	private LocalDateTime deadlineDate;
-	
-	@Column(name = "priority")
 	private String priority;// ver o tipo de prioridade.
-	
-	@Column(name = "name")
 	private String status;
-
-	//@Column(name = "creator_user_id")
-	//private UUID creatorUserId;//id do usuario.
-
+	//private UserModel user;
 	
-	public CreateProjectCommand(@NotBlank(message = "Name cannot be null.") String name, String description,
-			LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime startDate, LocalDateTime deadlineDate,
-			String priority, String status) {
-		super();
+
+	public CreateProjectCommand(String name, String description, LocalDateTime createdAt, LocalDateTime updatedAt,
+			LocalDateTime startDate, LocalDateTime deadlineDate, String priority, String status/*, UserModel user*/) {
 		this.name = name;
 		this.description = description;
 		this.createdAt = createdAt;
@@ -48,6 +32,7 @@ public class CreateProjectCommand {
 		this.deadlineDate = deadlineDate;
 		this.priority = priority;
 		this.status = status;
+		//this.user = user;
 	}
 
 	public String getName() {
@@ -113,5 +98,13 @@ public class CreateProjectCommand {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
+
+	/*public UserModel getUser() {
+		return user;
+	}
+
+	public void setUser(UserModel user) {
+		this.user = user;
+	}*/
+
 }

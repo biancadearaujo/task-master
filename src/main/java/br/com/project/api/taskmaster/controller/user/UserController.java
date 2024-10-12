@@ -26,7 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.project.api.taskmaster.command.user.CreateUserCommand;
 import br.com.project.api.taskmaster.exception.user.InvalidUserException;
 import br.com.project.api.taskmaster.exception.user.NoRegisteredUsersException;
+import br.com.project.api.taskmaster.model.project.ProjectModel;
 import br.com.project.api.taskmaster.model.user.UserModel;
+import br.com.project.api.taskmaster.service.project.ProjectService;
 import br.com.project.api.taskmaster.service.user.UserService;
 import br.com.project.api.taskmaster.validator.user.UserValidator;
 import jakarta.validation.Valid;
@@ -39,14 +41,17 @@ public class UserController {
 	
 	final UserService userService;
 	final UserValidator userValidator;
+	final ProjectService projectService;
 	
-	public UserController(UserService userService, UserValidator userValidator) {
+	public UserController(UserService userService, UserValidator userValidator, ProjectService projectService) {
 		this.userService = userService;
 		this.userValidator = userValidator;
+		this.projectService = projectService;
 	}
 
 
 	@GetMapping
+	//@PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.idUser")
 	public ResponseEntity<Page<UserModel>> getAllUsers(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
 		
 		Page<UserModel> users = userService.getAllUsers(pageable);
@@ -56,6 +61,7 @@ public class UserController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(users);		
 	}
+
 	
 	@GetMapping("/{userId}")
 	public ResponseEntity<Object> getUserById(@PathVariable UUID userId){

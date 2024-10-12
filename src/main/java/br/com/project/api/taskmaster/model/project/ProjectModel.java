@@ -66,7 +66,7 @@ public class ProjectModel  implements Serializable{
 	*/
 	
 	@ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "id_user", nullable = false)
     private UserModel user;
 	
 	public ProjectModel() {
@@ -100,6 +100,21 @@ public class ProjectModel  implements Serializable{
 		this.deadlineDate = deadlineDate;
 		this.priority = priority;
 		this.status = status;
+	}
+	
+	public ProjectModel(@NotBlank(message = "Name cannot be null.") String name, String description,
+			LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime startDate, LocalDateTime deadlineDate,
+			String priority, String status, UserModel user) {
+		super();
+		this.name = name;
+		this.description = description;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.startDate = startDate;
+		this.deadlineDate = deadlineDate;
+		this.priority = priority;
+		this.status = status;
+		this.user = user;
 	}
 
 	public UUID getId() {

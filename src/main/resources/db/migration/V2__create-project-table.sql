@@ -8,5 +8,5 @@ CREATE TABLE TB_PROJECTS (
   deadline_date TIMESTAMP,
   priority VARCHAR(255),
   status VARCHAR(255),
-  user_id UUID REFERENCES TB_USERS(id_user)
+  id_user UUID REFERENCES TB_USERS(id_user) NOT NULL
 );

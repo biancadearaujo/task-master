@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import br.com.project.api.taskmaster.model.project.ProjectModel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -22,6 +23,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
@@ -76,7 +78,13 @@ public class UserModel implements Serializable, UserDetails{
 	@Column(name = "verification_token")
 	private String verificationToken;
 	
+	//@OneToMany(mappedBy = "user")
+	//private List<ProjectModel> projects;
 	
+	@OneToMany(mappedBy = "user")
+	private List<ProjectModel> projects;
+
+
 	public UserModel() {
 	}
 
@@ -211,12 +219,38 @@ public class UserModel implements Serializable, UserDetails{
 		this.verificationToken = verificationToken;
 	}
 	
+	public List<ProjectModel> getProjects() {
+		return projects;
+	}
+
+	public void setProjects(List<ProjectModel> projects) {
+		this.projects = projects;
+	}
+	
+	public UUID getId() {
+		return id;
+	}
+
+
+	public void setId(UUID id) {
+		this.id = id;
+	}
+
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	
+	
 /*@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
 		else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
 	}*/
 	
+	
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
