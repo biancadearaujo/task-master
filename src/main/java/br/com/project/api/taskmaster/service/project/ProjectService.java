@@ -118,8 +118,13 @@ public class ProjectService {
 					throw new InvalidProjectException(validationErrors);
 				}
 				
+				UserModel userModel = userRepository.findById(createProjectCommand.getUserId())
+						.orElseThrow(() -> new NoRegisteredProjectException("User not found"));
+				
+				
 				ProjectModel newProject = projectCreator.createProjectAttributes(createProjectCommand);
 								
+				newProject.setUser(userModel);
 				
 				return projectRepository.save(newProject);
 				

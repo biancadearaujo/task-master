@@ -1,7 +1,9 @@
 package br.com.project.api.taskmaster.builder.user;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import br.com.project.api.taskmaster.model.project.ProjectModel;
 import br.com.project.api.taskmaster.model.user.UserModel;
 import br.com.project.api.taskmaster.model.user.UserRole;
 
@@ -18,6 +20,7 @@ public class UserBuilder {
 	private String avatarUrl;
 	private boolean isActive;
 	private String verificationToken;
+	private List<ProjectModel> projects;
 	
 	public UserBuilder name(String name) {
         this.name = name;
@@ -73,6 +76,11 @@ public class UserBuilder {
         this.verificationToken = verificationToken;
         return this;
     }
+    
+    public UserBuilder projects(List<ProjectModel> projects) {
+        this.projects = projects;
+        return this;
+    }
 
     public UserModel build() {
         return new UserModel(
@@ -86,7 +94,8 @@ public class UserBuilder {
             this.phoneNumber,
             this.avatarUrl,
             this.isActive,
-            this.verificationToken
+            this.verificationToken,
+            this.projects
         );
     }
 	

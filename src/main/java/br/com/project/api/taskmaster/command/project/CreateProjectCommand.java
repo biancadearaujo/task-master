@@ -19,11 +19,11 @@ public class CreateProjectCommand {
 	private LocalDateTime deadlineDate;
 	private String priority;// ver o tipo de prioridade.
 	private String status;
-	//private UserModel user;
+	private UUID userId;
 	
 
 	public CreateProjectCommand(String name, String description, LocalDateTime createdAt, LocalDateTime updatedAt,
-			LocalDateTime startDate, LocalDateTime deadlineDate, String priority, String status/*, UserModel user*/) {
+			LocalDateTime startDate, LocalDateTime deadlineDate, String priority, String status, UUID userId) {
 		this.name = name;
 		this.description = description;
 		this.createdAt = createdAt;
@@ -32,8 +32,9 @@ public class CreateProjectCommand {
 		this.deadlineDate = deadlineDate;
 		this.priority = priority;
 		this.status = status;
-		//this.user = user;
+		this.userId = userId;
 	}
+	
 
 	public String getName() {
 		return name;
@@ -99,12 +100,12 @@ public class CreateProjectCommand {
 		this.status = status;
 	}
 
-	/*public UserModel getUser() {
-		return user;
+	public UUID getUserId() {
+		return userId;
 	}
 
-	public void setUser(UserModel user) {
-		this.user = user;
-	}*/
+	public void setUserId(UUID userId) {
+		this.userId = userId;
+	}
 
 }

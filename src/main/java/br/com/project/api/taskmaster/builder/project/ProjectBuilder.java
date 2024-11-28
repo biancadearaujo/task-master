@@ -1,6 +1,7 @@
 package br.com.project.api.taskmaster.builder.project;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import br.com.project.api.taskmaster.model.project.ProjectModel;
@@ -16,9 +17,10 @@ public class ProjectBuilder {
 	private LocalDateTime deadlineDate;
 	private String priority;// ver o tipo de prioridade.
 	private String status;
+	//private Optional<UserModel> user;
 	//private UUID userId;
 	//private UUID creatorUserId;//id do usuario.
-	//private UserModel user;
+	private UserModel user;
 
 	
 	public ProjectBuilder name(String name) {
@@ -61,6 +63,11 @@ public class ProjectBuilder {
 		return this;
 	}
 	
+	/*public ProjectBuilder user(Optional<UserModel> user) {
+		this.user = user;
+		return this;
+	}*/
+	
 	/*public ProjectBuilder user (UUID userId) {
 		this.userId = userId;
 		return this;
@@ -71,11 +78,11 @@ public class ProjectBuilder {
 		return this;
 	}
 	*/
-	/*public ProjectBuilder user (UserModel user) {
+	public ProjectBuilder user (UserModel user) {
 		this.user = user;
 		return this;
 	}
-*/
+
 	public ProjectModel build() {
 		return new ProjectModel(
 				this.name,
@@ -85,8 +92,8 @@ public class ProjectBuilder {
 				this.startDate,
 				this.deadlineDate,
 				this.priority,
-				this.status//,
-				//this.user
+				this.status,
+				this.user
 		);
 	}
 	

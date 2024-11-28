@@ -88,7 +88,7 @@ public class UserModel implements Serializable, UserDetails{
 	public UserModel() {
 	}
 
-	
+	/*
 	public UserModel(String name, String email, String login, String password, UserRole role, LocalDateTime createdAt,
 			LocalDateTime updatedAt, String phoneNumber, String avatarUrl, boolean isActive, String verificationToken) {
 		this.name = name;
@@ -121,7 +121,51 @@ public class UserModel implements Serializable, UserDetails{
 		this.isActive = isActive;
 		this.verificationToken = verificationToken;
 	}
+*/
 
+	public UserModel(@NotBlank(message = "Name cannot be null.") String name,
+			@NotBlank(message = "Name cannot be null.") String email,
+			@NotBlank(message = "Login cannot be null.") String login,
+			@NotBlank(message = "Password cannot be null.") String password, UserRole role, LocalDateTime createdAt,
+			LocalDateTime updatedAt, String phoneNumber, String avatarUrl, boolean isActive, String verificationToken,
+			List<ProjectModel> projects) {
+		super();
+		this.name = name;
+		this.email = email;
+		this.login = login;
+		this.password = password;
+		this.role = role;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.phoneNumber = phoneNumber;
+		this.avatarUrl = avatarUrl;
+		this.isActive = isActive;
+		this.verificationToken = verificationToken;
+		this.projects = projects;
+	}
+	
+	public UserModel(UUID id, @NotBlank(message = "Name cannot be null.") String name,
+			@NotBlank(message = "Name cannot be null.") String email,
+			@NotBlank(message = "Login cannot be null.") String login,
+			@NotBlank(message = "Password cannot be null.") String password, UserRole role, LocalDateTime createdAt,
+			LocalDateTime updatedAt, String phoneNumber, String avatarUrl, boolean isActive, String verificationToken,
+			List<ProjectModel> projects) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.email = email;
+		this.login = login;
+		this.password = password;
+		this.role = role;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.phoneNumber = phoneNumber;
+		this.avatarUrl = avatarUrl;
+		this.isActive = isActive;
+		this.verificationToken = verificationToken;
+		this.projects = projects;
+	}
+	
 
 	public UUID getIdUser() {
 		return id;

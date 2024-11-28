@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -99,11 +100,22 @@ public class ProjectController {
 				System.out.println("Aqui está dando erro");
 				return ResponseEntity.status(HttpStatus.CONFLICT).body(validationErrors);
 			}
-			System.out.println("Segundo que pode estar dando erro");
-			return ResponseEntity.status(HttpStatus.OK).body(projectService.save(createProjectCommand));
+			
+			ProjectModel savedProject = projectService.save(createProjectCommand);
+			
+			if(savedProject.getUser() != null) {
+				System.out.println("Usuário associado ao projeto: " + savedProject.getUser().getId());
+			} else {
+				System.out.println("Usuário não foi associado ao projeto.");
+			}
+			
+			return ResponseEntity.status(HttpStatus.CREATED).body(savedProject);
+			
+			
 		} catch (Exception e) {
-			System.out.println("Terceiro que pode estar dando erro");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			System.out.println("Erro inesperado: " + e.getMessage());
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao salvar o projeto.");
 		}
 	}
 	/*
