@@ -1,10 +1,13 @@
-package br.com.project.api.taskmaster.command.project;
+package br.com.project.api.taskmaster.dto.project;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class CreateProjectCommand {
+import br.com.project.api.taskmaster.model.project.ProjectModel;
+
+public class ProjectResponseDTO {
 	
+	private UUID id;
 	private String name;
 	private String description;
 	private LocalDateTime createdAt;
@@ -14,21 +17,30 @@ public class CreateProjectCommand {
 	private String priority;// ver o tipo de prioridade.
 	private String status;
 	private UUID userId;
+
+	//Converts an object from the ProjectModel entity to a CreateProjectCommand.
+	//Returns only the desired data without loading all the user project data.
+	public ProjectResponseDTO(ProjectModel project) {
+		this.id = project.getId();
+	    this.name = project.getName() != null ? project.getName() : "No Name";
+	    this.description = project.getDescription() != null ? project.getDescription() : "No Description";
+	    this.createdAt = project.getCreatedAt();
+	    this.updatedAt = project.getUpdatedAt();
+	    this.startDate = project.getStartDate();
+	    this.deadlineDate = project.getDeadlineDate();
+	    this.priority = project.getPriority() != null ? project.getPriority() : "Low";
+	    this.status = project.getStatus() != null ? project.getStatus() : "Pending";
+	    this.userId = project.getUser() != null ? project.getUser().getId() : null;
+		}
+
 	
-	
-	public CreateProjectCommand(String name, String description, LocalDateTime createdAt, LocalDateTime updatedAt,
-			LocalDateTime startDate, LocalDateTime deadlineDate, String priority, String status, UUID userId) {
-		this.name = name;
-		this.description = description;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-		this.startDate = startDate;
-		this.deadlineDate = deadlineDate;
-		this.priority = priority;
-		this.status = status;
-		this.userId = userId;
+	public UUID getId() {
+		return id;
 	}
-	
+
+	public void setId(UUID id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;
@@ -101,5 +113,5 @@ public class CreateProjectCommand {
 	public void setUserId(UUID userId) {
 		this.userId = userId;
 	}
-
+	
 }

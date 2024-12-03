@@ -36,7 +36,7 @@ public class SecurityConfiguration {
 	        		.requestMatchers(HttpMethod.GET, "/auth").hasRole("ADMIN")
 	        		.requestMatchers(HttpMethod.GET, "{userId}/auth").hasRole("ADMIN")
 	        		//.requestMatchers(HttpMethod.GET, "/auth/project").hasRole("USER")
-	        		.requestMatchers(HttpMethod.GET, "/auth/project").hasRole("USER")
+	        		.requestMatchers(HttpMethod.GET, "/auth/project").hasRole("ADMIN")
 	        		.requestMatchers(HttpMethod.POST, "/auth/project").hasRole("USER")
 	        		.requestMatchers(HttpMethod.POST, "/auth/project").hasRole("USER")
 	        		.requestMatchers(HttpMethod.GET, "/auth/project").hasRole("USER")

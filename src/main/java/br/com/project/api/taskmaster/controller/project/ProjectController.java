@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.project.api.taskmaster.command.project.CreateProjectCommand;
+import br.com.project.api.taskmaster.dto.project.ProjectResponseDTO;
 import br.com.project.api.taskmaster.exception.project.NoRegisteredProjectException;
 import br.com.project.api.taskmaster.model.project.ProjectModel;
 import br.com.project.api.taskmaster.model.user.UserModel;
@@ -67,7 +68,22 @@ public class ProjectController {
 	}
 	
 	@GetMapping("/{projectId}")
-	public ResponseEntity<Optional<ProjectModel>> getById(@PathVariable UUID projectId) {
+	public ResponseEntity<Object> getProjectById(@PathVariable UUID projectId) {
+		try {
+	        ProjectModel project = projectService.getById(projectId);
+	        ProjectResponseDTO projectDTO = new ProjectResponseDTO(project);
+	        
+	        return ResponseEntity.status(HttpStatus.OK).body(projectDTO);
+	        
+	    } catch (NoRegisteredProjectException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error");
+	    }
+	}
+	/*
+	@GetMapping("/{projectId}")
+	public ResponseEntity<Optional<ProjectModel>> getProjectByUser(@PathVariable UUID projectId) {
 		try {
 			Optional<ProjectModel> project = projectService.getById(projectId);
 			return ResponseEntity.status(HttpStatus.OK).body(project);
@@ -78,7 +94,7 @@ public class ProjectController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
-	
+	*/
 	
 	/*public ResponseEntity<Optional<ProjectModel>> getByName(String name) {
 		try {

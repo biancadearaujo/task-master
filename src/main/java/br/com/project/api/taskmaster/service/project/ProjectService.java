@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.project.api.taskmaster.command.project.CreateProjectCommand;
+import br.com.project.api.taskmaster.dto.project.ProjectResponseDTO;
 import br.com.project.api.taskmaster.exception.project.InvalidProjectException;
 import br.com.project.api.taskmaster.exception.project.NoRegisteredProjectException;
 import br.com.project.api.taskmaster.model.project.ProjectModel;
@@ -45,9 +46,14 @@ public class ProjectService {
 		return projectRepository.findAll(pageable);	
 	}
 	
-	public Optional<ProjectModel> getById(UUID id) {
-		Optional<ProjectModel> projectModel = Optional.of(projectRepository.findById(id).orElseThrow(() -> new NoRegisteredProjectException("Project not found")));
-		return projectModel;	
+	public ProjectModel getById(UUID id) throws NoRegisteredProjectException {
+		return projectRepository.findById(id)
+		        .orElseThrow(() -> new NoRegisteredProjectException("Project not found"));
+		
+		
+		//ProjectModel project = projectRepository.findById(id)
+		 //       .orElseThrow(() -> new NoRegisteredProjectException("Project not found"));
+		//return new ProjectResponseDTO(project);	
 	}
 	
 	public Optional<ProjectModel> getByName(String name) {
